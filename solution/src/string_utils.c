@@ -10,19 +10,26 @@ size_t string_length(const char *restrict string) {
 	return result - 1;
 }
 
+static inline size_t size_min(size_t a, size_t b) {
+	return a < b ? a : b;
+}
+
 enum string_compare_status string_compare(const char *restrict first, const char *restrict second) {
 	size_t f_len = string_length(first);
 	size_t s_len = string_length(second);
+
+	size_t min_len = size_min(f_len, s_len);
+
+	for (size_t i = 0; i < min_len; ++i) {
+		if (first[i] != second[i]) {
+			return first[i] < second[i] ? SCS_LESS : SCS_GREATER;
+		}
+	}
 
 	if (f_len != s_len) {
 		return f_len < s_len ? SCS_LESS : SCS_GREATER;
 	}
 
-	for (size_t i = 0; i < f_len; ++i) {
-		if (first[i] != second[i]) {
-			return first[i] < second[i] ? SCS_LESS : SCS_GREATER;
-		}
-	}
 
 	return SCS_EQUALS;
 }
