@@ -1,6 +1,70 @@
 #include "mdict.h"
 
-#include "string_utils.h"
+
+size_t string_length(const char *restrict string) {
+	size_t result = 0;
+
+	while (string[result++]) {}
+
+	return result - 1;
+}
+
+static inline size_t size_min(size_t a, size_t b) {
+	return a < b ? a : b;
+}
+
+enum string_compare_status string_compare(const char *restrict first, const char *restrict second) {
+	size_t f_len = string_length(first);
+	size_t s_len = string_length(second);
+
+	size_t min_len = size_min(f_len, s_len);
+
+	for (size_t i = 0; i < min_len; ++i) {
+		if (first[i] != second[i]) {
+			return first[i] < second[i] ? SCS_LESS : SCS_GREATER;
+		}
+	}
+
+	if (f_len != s_len) {
+		return f_len < s_len ? SCS_LESS : SCS_GREATER;
+	}
+
+
+	return SCS_EQUALS;
+}
+
+static inline bool is_whitespace(char c) {
+	return c == '\t' || c == ' ' || c == '\r' || c == '\n';
+}
+
+void string_remove_trailing_whitespace(char *restrict string) {
+	size_t length = string_length(string);
+
+	for (size_t i = 0; i < length; ++i) {
+		if (is_whitespace(string[i])) {
+			string[i] = 0;
+			return;
+		}
+	}
+}
+
+file_writer file_writer_open(const char *restrict filename) {
+	return (file_writer) {
+		.value = fopen(filename, "w")
+	};
+}
+
+void file_writer_close(file_writer *restrict this) { 
+	fclose(this->value);
+	this->value = NULL;
+}
+
+bool file_writer_write(file_writer this, const char *restrict buffer) {
+	size_t length = string_length(buffer);
+
+	return length == fwrite(buffer, 1, length, this.value);
+}
+
 
 struct search_status {
 	size_t index;

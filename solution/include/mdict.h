@@ -5,7 +5,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "file_writer.h"
+enum string_compare_status {
+	SCS_LESS = -1,
+	SCS_EQUALS,
+	SCS_GREATER
+};
+
+size_t string_length(const char *restrict string);
+enum string_compare_status string_compare(const char *restrict first, const char *restrict second);
+void string_remove_trailing_whitespace(char *restrict string);
+
+typedef struct {
+	FILE *value;
+} file_writer;
+
+file_writer file_writer_open(const char *restrict filename);
+void file_writer_close(file_writer *restrict this);
+bool file_writer_write(file_writer this, const char *restrict buffer);
 
 enum {
 	WORD_MAX_LENGTH = 31,
