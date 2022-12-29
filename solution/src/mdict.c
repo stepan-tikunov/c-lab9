@@ -92,6 +92,7 @@ static struct search_status lower_bound(const struct dict *restrict this, const 
 	case SCS_GREATER:
 		return lower_bound(this, key, mid + 1, right);
 	}
+	return (struct search_status) {0};
 }
 
 static void shift_right_all_after(struct dict *restrict this, size_t index) {
