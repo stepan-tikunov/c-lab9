@@ -8,6 +8,20 @@
 
 extern inline struct dict dict_create();
 
+const struct dict_entry entries[] = {
+	{"cat", "kot"},
+	{"dog", "sobaka"},
+	{"turtle", "cherepakha"},
+	{"whale", "kit"},
+	{"snake", "zmeya"},
+	{"cockroach", "tarakan"},
+	{"ferret", "horyok"},
+	{"table", "stol"},
+	{"chair", "stul"},
+	{"laptop", "noutbuk"},
+};
+
+
 enum menu_option {
 	MO_ADD = 1,
 	MO_REMOVE,
@@ -148,6 +162,9 @@ static void save_dict(struct dict *restrict dict) {
 
 int interactive() {
 	struct dict dict = dict_create();
+	for (size_t i = 0; i < sizeof(entries) / sizeof(struct dict_entry); ++i) {
+		dict_add_entry(&dict, entries[i]);
+	}
 
 	for (;;) {
 		switch (menu()) {
@@ -180,14 +197,6 @@ int interactive() {
 int demo() {
 
 	struct dict dict = dict_create();
-
-	struct dict_entry entries[] = {
-		{"cat", "kot"},
-		{"dog", "sobaka"},
-		{"turtle", "cherepakha"},
-		{"snake", "zmeya"}
-	};
-
 	for (size_t i = 0; i < sizeof(entries) / sizeof(struct dict_entry); ++i) {
 		dict_add_entry(&dict, entries[i]);
 		fprintf(stderr, "Used dict_add_entry to add word \"%s\" with \"%s\" translation\n", entries[i].key, entries[i].value);
